@@ -11,6 +11,10 @@ const {
   USER_PROGRESS_GET_TWENTY_FOUR,
   USER_WORD_FLAG,
   DICT_GET_TOTALWORDS,
+  ADD_NEW_TASK,
+  TASK_GET_ALL,
+  TASK_UPDATE,
+  TASK_COLOR_SET,
 } = require("./endpoints");
 require("dotenv").config();
 const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
@@ -53,6 +57,7 @@ let Pair = require("./models/pair.js");
 let Log = require("./models/log.js");
 let Translation = require("./models/translation.js");
 let Dict = require("./models/dict.js");
+let Task = require("./models/task.js");
 
 function parseHrtimeToSeconds(hrtime) {
   var seconds = (hrtime[0] + hrtime[1] / 1e9).toFixed(3);
@@ -945,70 +950,91 @@ app.post(TRANSLATE_ONE, async (req, res) => {
   //   }
 });
 
-app.post("/frequencies/translate", async (req, res) => {
-  const fromLanguage = req.body.fromLanguage;
-  const toLanguage = req.body.toLanguage;
-  console.log("freq trans");
-  const frequencies = await Frequent.find({}, (err, frequencies) => {
-    if (err) {
-      console.log("err", err);
-    } else {
-      console.log("frequencies", frequencies);
-      return frequencies;
-      //res.send("TRANSLATED");
-    }
-  });
+app.post(TASK_COLOR_SET, async (req, res) => {
+  const _id = req.body._id;
+  const color = req.body.color;
 
-  console.log("frequencies", frequencies);
-
-  let id = 0;
-  for (let i = 0; i < frequencies.length; i++) {
-    const f = frequencies[i];
-    // console.log("I have f:", f.id, f.word);
-    //only translate if translation is not yet done
-    const translation = await translateThisWord(
-      f.id,
-      f.word,
-      fromLanguage,
-      toLanguage
-    );
-
-    console.log("translated", f.word, "into", translation);
-
-    if (translation !== false) {
-      Pair.create({
-        id: id,
-        word: f.word,
-        toLanguage: toLanguage,
-        fromLanguage: fromLanguage,
-        translation: translation,
-        display: true,
-      });
-      id++;
-    }
-  }
-
-  setTimeout(() => {
-    console.log(
-      "now counting Pair length for this lang combo and updating dict table"
-    );
-    const totalWords = id;
-    Dict.create(
-      {
-        fromLanguage: fromLanguage,
-        toLanguage: toLanguage,
-        totalWords: totalWords,
-      },
-      (err, succ) => {
-        if (err) {
-          console.log("err", err);
-        } else {
-          console.log("dict create", succ);
-          res.send("TRANSLATED and created", totalWords, "pairs");
-        }
+  Task.updateOne(
+    {
+      _id: _id,
+    },
+    {
+      color,
+    },
+    (err, result) => {
+      if (err) {
+        console.log("err", err);
+      } else {
+        console.log("result", result);
+        res.send(result);
       }
-    );
-  }, 1000);
+    }
+  );
+});
+
+app.post(TASK_UPDATE, async (req, res) => {
+  const _id = req.body._id;
+  const username = req.body.username;
+  const caption = req.body.caption;
+  const text = req.body.text;
+
+  Task.updateOne(
+    {
+      _id: _id,
+    },
+    {
+      caption,
+      text,
+    },
+    (err, result) => {
+      if (err) {
+        console.log("err", err);
+      } else {
+        console.log("result", result);
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.post(ADD_NEW_TASK, async (req, res) => {
+  const username = req.body.username;
+  const caption = req.body.caption;
+  const text = req.body.text;
+
+  Task.create(
+    {
+      username: username,
+      caption: caption,
+      text: text,
+    },
+    (err, result) => {
+      if (err) {
+        console.log("err", err);
+      } else {
+        console.log("result", result);
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.post(TASK_GET_ALL, async (req, res) => {
+  const username = req.body.username;
+
+  Task.find(
+    {
+      //   username: username,
+    },
+    (err, result) => {
+      if (err) {
+        console.log("err", err);
+      } else {
+        console.log("result", result);
+        res.send(result);
+      }
+    }
+  );
 });
 
 app.post(PAIR_EDIT, (req, res) => {
