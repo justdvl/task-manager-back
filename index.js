@@ -15,6 +15,7 @@ const {
   TASK_GET_ALL,
   TASK_UPDATE,
   TASK_COLOR_SET,
+  TASK_REMOVE,
 } = require("./endpoints");
 require("dotenv").config();
 const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
@@ -25,7 +26,7 @@ const UP = 1;
 const DOWN = 3;
 const SPREAD = 40;
 
-mongoose.connect("mongodb://localhost/taskmanager");
+mongoose.connect("mongodb://localhost/taskmanager", { useNewUrlParser: true });
 let db = mongoose.connection;
 
 //Check connection
@@ -999,14 +1000,33 @@ app.post(TASK_UPDATE, async (req, res) => {
 
 app.post(ADD_NEW_TASK, async (req, res) => {
   const username = req.body.username;
-  const caption = req.body.caption;
-  const text = req.body.text;
+  const caption = req.body.caption ? req.body.caption : "";
+  const text = req.body.text ? req.body.text : "";
 
+  console.log("caption, text", caption, text);
   Task.create(
     {
       username: username,
       caption: caption,
       text: text,
+    },
+    (err, result) => {
+      if (err) {
+        console.log("err", err);
+      } else {
+        console.log("result", result);
+        res.send(result);
+      }
+    }
+  );
+});
+
+app.post(TASK_REMOVE, async (req, res) => {
+  const _id = req.body._id;
+
+  Task.deleteOne(
+    {
+      _id: _id,
     },
     (err, result) => {
       if (err) {
@@ -1480,5 +1500,45 @@ app.post("/frequency/addArray", (req, res) => {
     res.send("FREQUENCY_ADD_FAIL");
   }
 });
+
+//// FILE UPLOAD START ////
+// const app = express();
+// app.use(bodyParser.json());
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: false,
+//   })
+// );
+// app.use(cors());
+
+// app.use("/public", express.static("public"));
+
+var publicDir = require("path").join(__dirname, "/public");
+console.log("ppublicDir", publicDir);
+app.use(express.static(publicDir));
+
+const api = require("./routes/user.routes");
+
+app.use("/api", api);
+
+app.use((req, res, next) => {
+  // Error goes via `next()` method
+  setImmediate(() => {
+    next(new Error("Something went wrong"));
+  });
+});
+
+app.use(function (err, req, res, next) {
+  console.error("app use er", err.message);
+  if (!err.statusCode) err.statusCode = 500;
+  res.status(err.statusCode).send(err.message);
+});
+
+//// FILE UPLOAD END ////
+
+// const port = process.env.PORT || 4000;
+// const server = app.listen(port, () => {
+//   console.log("Connected to port " + port);
+// });
 
 app.listen(8000);

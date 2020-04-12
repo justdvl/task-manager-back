@@ -8,14 +8,20 @@ let taskSchema = mongoose.Schema({
 
   caption: {
     type: String,
-    required: true,
+    required: false,
   },
 
   text: {
     type: String,
-    required: true,
+    required: false,
   },
+
   color: {
+    type: String,
+    required: false,
+  },
+
+  img: {
     type: String,
     required: false,
   },

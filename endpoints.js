@@ -8,6 +8,7 @@ const ADD_NEW_TASK = `/task/add`;
 const TASK_GET_ALL = `/task/get-all`;
 const TASK_UPDATE = `/task/update`;
 const TASK_COLOR_SET = `/task/color/set`;
+const TASK_REMOVE = `/task/remove`;
 
 module.exports = {
   PAIR_EDIT,
@@ -20,4 +21,5 @@ module.exports = {
   TASK_GET_ALL,
   TASK_UPDATE,
   TASK_COLOR_SET,
+  TASK_REMOVE,
 };
