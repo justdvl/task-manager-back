@@ -29,13 +29,19 @@ const UP = 1;
 const DOWN = 3;
 const SPREAD = 40;
 
-mongoose.connect("mongodb://localhost/taskmanager", { useNewUrlParser: true });
-let db = mongoose.connection;
+try {
+  mongoose.connect("mongodb://localhost/taskmanager", {
+    useNewUrlParser: true,
+  });
+  let db = mongoose.connection;
 
-//Check connection
-db.once("open", () => {
-  console.log("Connected to MongoDb!");
-});
+  //Check connection
+  db.once("open", () => {
+    console.log("Connected to MongoDb!");
+  });
+} catch (e) {
+  console.log("failed connecting to mongoDB", e);
+}
 
 // mongoose.collections((err, result) => {
 //   if (err) {
