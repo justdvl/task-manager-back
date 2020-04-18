@@ -162,23 +162,24 @@ app.post(USER_LOGGED, (req, res) => {
     res
       .status(401) // HTTP status 404: Unauthorized
       .send("Not logged in ");
-  }
-  User.find({ auth: req.body.auth }, (err, answer) => {
-    if (err) {
-      console.log("login database lookup error");
-    } else {
-      console.log("answer ul", answer[0], typeof answer);
-      if (Array.isArray(answer) && answer[0]) {
-        //authorized
-        res.status(200).send({ logged: true });
+  } else {
+    User.find({ auth: req.body.auth }, (err, answer) => {
+      if (err) {
+        console.log("login database lookup error");
       } else {
-        //unauthorized
-        res
-          .status(401) // HTTP status 404: Unauthorized
-          .send("Not logged in ");
+        console.log("answer ul", answer[0], typeof answer);
+        if (Array.isArray(answer) && answer[0]) {
+          //authorized
+          res.status(200).send({ logged: true });
+        } else {
+          //unauthorized
+          res
+            .status(401) // HTTP status 404: Unauthorized
+            .send("Not logged in ");
+        }
       }
-    }
-  });
+    });
+  }
 });
 
 app.post(LOGIN, (req, res) => {
