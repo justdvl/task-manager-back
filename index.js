@@ -94,11 +94,28 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.get("/", (req, res) => {
+  console.log("Hello World");
   res.send("Hello World");
   // res.sendFile(path.join(__dirname, "static", "index.html"));
 });
 app.get("/back", (req, res) => {
+  console.log("Hello World back");
+
   res.send("Hello World BACK");
+  // res.sendFile(path.join(__dirname, "static", "index.html"));
+});
+
+app.get("/double", (req, res) => {
+  console.log("Hello World double");
+
+  res.send("Hello World double");
+  // res.sendFile(path.join(__dirname, "static", "index.html"));
+});
+
+app.get("/back/two", (req, res) => {
+  console.log("Hello World back two");
+
+  res.send("Hello World two");
   // res.sendFile(path.join(__dirname, "static", "index.html"));
 });
 
