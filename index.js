@@ -17,6 +17,8 @@ const {
   TASK_COLOR_SET,
   TASK_REMOVE,
   TASK_SORT,
+  LOGIN,
+  USER_LOGGED,
 } = require("./endpoints");
 require("dotenv").config();
 const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
@@ -72,8 +74,11 @@ app.use("/public", express.static(path.join(__dirname, "static")));
 
 var cors = require("cors");
 //app.use(cors({ credentials: true, origin: "158.195.108.7" }));
-app.use(cors());
-// app.use(function(req, res, next) {
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+
+// app.use(cors());
+
+// app.use(function (req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
 //   res.header(
 //     "Access-Control-Allow-Headers",
@@ -92,8 +97,12 @@ app.get("/", (req, res) => {
   res.send("Hello World");
   // res.sendFile(path.join(__dirname, "static", "index.html"));
 });
+app.get("/back", (req, res) => {
+  res.send("Hello World BACK");
+  // res.sendFile(path.join(__dirname, "static", "index.html"));
+});
 
-app.post("/user-logged", (req, res) => {
+app.post(USER_LOGGED, (req, res) => {
   console.log("req.body.auth", req.body.auth);
   User.find({ auth: req.body.auth }, (err, answer) => {
     if (err) {
@@ -113,7 +122,7 @@ app.post("/user-logged", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post(LOGIN, (req, res) => {
   // console.log("login req", req);
   const login = req.body;
   // console.log("login", login, typeof login);

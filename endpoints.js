@@ -10,6 +10,8 @@ const TASK_UPDATE = `/task/update`;
 const TASK_COLOR_SET = `/task/color/set`;
 const TASK_REMOVE = `/task/remove`;
 const TASK_SORT = `/task/sort`;
+const USER_LOGGED = "/user-logged";
+const LOGIN = "/login";
 
 module.exports = {
   PAIR_EDIT,
@@ -24,4 +26,6 @@ module.exports = {
   TASK_COLOR_SET,
   TASK_REMOVE,
   TASK_SORT,
+  USER_LOGGED,
+  LOGIN,
 };
