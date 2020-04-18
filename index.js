@@ -16,6 +16,7 @@ const {
   TASK_UPDATE,
   TASK_COLOR_SET,
   TASK_REMOVE,
+  TASK_SORT,
 } = require("./endpoints");
 require("dotenv").config();
 const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
@@ -31,7 +32,7 @@ let db = mongoose.connection;
 
 //Check connection
 db.once("open", () => {
-  console.log("Connected to MongoDb");
+  console.log("Connected to MongoDb!");
 });
 
 // mongoose.collections((err, result) => {
@@ -1002,6 +1003,7 @@ app.post(ADD_NEW_TASK, async (req, res) => {
   const username = req.body.username;
   const caption = req.body.caption ? req.body.caption : "";
   const text = req.body.text ? req.body.text : "";
+  const color = req.body.color;
 
   console.log("caption, text", caption, text);
   Task.create(
@@ -1009,6 +1011,7 @@ app.post(ADD_NEW_TASK, async (req, res) => {
       username: username,
       caption: caption,
       text: text,
+      color,
     },
     (err, result) => {
       if (err) {
@@ -1037,6 +1040,33 @@ app.post(TASK_REMOVE, async (req, res) => {
       }
     }
   );
+});
+
+app.post(TASK_SORT, (req, res, next) => {
+  console.log("TASK_SORT");
+
+  username = req.body.username;
+  order = req.body.order;
+  let error = false;
+
+  order.forEach((o, index) => {
+    Task.updateOne(
+      {
+        username,
+        _id: o,
+      },
+      { index: index },
+      (err, suc) => {
+        if (err) {
+          error = true;
+          res.status(500).send("task sort error");
+        } else {
+        }
+      }
+    );
+  });
+
+  res.send("tasks sorted");
 });
 
 app.post(TASK_GET_ALL, async (req, res) => {
@@ -1536,9 +1566,9 @@ app.use(function (err, req, res, next) {
 
 //// FILE UPLOAD END ////
 
-// const port = process.env.PORT || 4000;
-// const server = app.listen(port, () => {
-//   console.log("Connected to port " + port);
-// });
+const port = process.env.PORT || 8080;
+const server = app.listen(port, () => {
+  console.log("Connected to port " + port);
+});
 
-app.listen(8000);
+// app.listen(8080);

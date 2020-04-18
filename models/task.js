@@ -25,6 +25,11 @@ let taskSchema = mongoose.Schema({
     type: String,
     required: false,
   },
+
+  index: {
+    type: String,
+    required: false,
+  },
 });
 
 taskSchema.set("timestamps", true);
