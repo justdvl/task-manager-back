@@ -39,6 +39,10 @@ try {
   db.once("open", () => {
     console.log("Connected to MongoDb!");
   });
+
+  db.on("error", (err) => {
+    console.log("err", err);
+  });
 } catch (e) {
   console.log("failed connecting to mongoDB", e);
 }
@@ -52,9 +56,6 @@ try {
 // });
 
 //Check for db errors
-db.on("error", (err) => {
-  console.log("err", err);
-});
 
 const app = express();
 
