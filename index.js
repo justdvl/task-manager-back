@@ -158,7 +158,7 @@ app.get("/back/two", (req, res) => {
 
 app.post(USER_LOGGED, (req, res) => {
   console.log("req.body.auth USER_LOGGED", req.body.auth, typeof req.body.auth);
-  if (!req.body.auth) {
+  if (!req.body.auth || req.body.auth === "undefined") {
     res
       .status(401) // HTTP status 404: Unauthorized
       .send("Not logged in ");
@@ -168,7 +168,7 @@ app.post(USER_LOGGED, (req, res) => {
       console.log("login database lookup error");
     } else {
       console.log("answer ul", answer[0], typeof answer);
-      if (answer[0]) {
+      if (Array.isArray(answer) && answer[0]) {
         //authorized
         res.status(200).send({ logged: true });
       } else {
