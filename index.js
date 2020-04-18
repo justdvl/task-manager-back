@@ -53,7 +53,7 @@ db.on("error", (err) => {
 const app = express();
 
 var cors = require("cors");
-app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
+app.use(cors({ credentials: true, origin: "http://64.225.110.242" }));
 
 //bring in Models
 let Language = require("./models/language.js");
