@@ -71,8 +71,8 @@ let current = "";
 app.use("/public", express.static(path.join(__dirname, "static")));
 
 var cors = require("cors");
-app.use(cors({ credentials: true, origin: "158.195.108.7" }));
-
+//app.use(cors({ credentials: true, origin: "158.195.108.7" }));
+app.use(cors());
 // app.use(function(req, res, next) {
 //   res.header("Access-Control-Allow-Origin", "http://localhost:3000"); // update to match the domain you will make the request from
 //   res.header(
