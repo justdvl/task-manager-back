@@ -53,6 +53,7 @@ db.on("error", (err) => {
 const app = express();
 
 var cors = require("cors");
+// app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(cors({ credentials: true, origin: "http://64.225.110.242" }));
 
 //bring in Models
@@ -149,7 +150,7 @@ app.get("/back/two", (req, res) => {
 });
 
 app.post(USER_LOGGED, (req, res) => {
-  console.log("req.body.auth", req.body.auth);
+  console.log("req.body.auth USER_LOGGED", req.body.auth, typeof req.body.auth);
   if (!req.body.auth) {
     res
       .status(401) // HTTP status 404: Unauthorized
@@ -221,54 +222,59 @@ app.post("/signup", (req, res) => {
   // console.log("login req", req);
   const signup = req.body;
   console.log("signup", signup, typeof signup);
-  User.find({ username: signup.username }, (err, answer) => {
-    if (err) {
-      console.log("signup > username find > database lookup error");
-    } else {
-      console.log("answer:", answer, answer[0], typeof answer);
-      if (!Array.isArray(answer)) {
-        console.log("signup failed");
-        //unauthorized
-        res
-          .status(401) // HTTP status 404: NotFound
-          .send("Signup Failed (users DB corrupted)");
-      } else if (answer[0]) {
-        // already exists
-        console.log("user", signup.username, "already exists");
-        res.status(303).send("USERNAME_ALREADY_EXISTS");
+  try {
+    User.find({ username: signup.username }, (err, answer) => {
+      if (err) {
+        console.log("signup > username find > database lookup error");
       } else {
-        //can create
-        current = signup.username;
-        console.log("current user:", current);
-        const millis = Date.now();
-        const seconds = Math.floor(millis / 1000);
-        const random = Math.random();
-        const userToken = Math.floor(seconds * random);
-        User.create(
-          {
-            username: signup.username,
-            email: signup.email,
-            password: signup.password,
-            fromLanguage: "en",
-            toLanguage: "fr",
-            auth: userToken,
-          },
-          (err, resp) => {
-            if (err) {
-              console.log("err", err);
-              res
-                .status(401) // HTTP status 404: NotFound
-                .send("Signup Failed");
-            } else {
-              console.log("res", res);
-              //res.json({ success: true, userToken });
-              res.status(200).send({ success: true, userToken: userToken });
+        console.log("answer:", answer, answer[0], typeof answer);
+        if (!Array.isArray(answer)) {
+          console.log("signup failed");
+          //unauthorized
+          res
+            .status(401) // HTTP status 404: NotFound
+            .send("Signup Failed (users DB corrupted)");
+        } else if (answer[0]) {
+          // already exists
+          console.log("user", signup.username, "already exists");
+          res.status(303).send("USERNAME_ALREADY_EXISTS");
+        } else {
+          //can create
+          current = signup.username;
+          console.log("current user:", current);
+          const millis = Date.now();
+          const seconds = Math.floor(millis / 1000);
+          const random = Math.random();
+          const userToken = Math.floor(seconds * random);
+          User.create(
+            {
+              username: signup.username,
+              email: signup.email,
+              password: signup.password,
+              fromLanguage: "en",
+              toLanguage: "fr",
+              auth: userToken,
+            },
+            (err, resp) => {
+              if (err) {
+                console.log("err", err);
+                res
+                  .status(401) // HTTP status 404: NotFound
+                  .send("Signup Failed");
+              } else {
+                console.log("res", res);
+                //res.json({ success: true, userToken });
+                res.status(200).send({ success: true, userToken: userToken });
+              }
             }
-          }
-        );
+          );
+        }
       }
-    }
-  });
+    });
+  } catch (e) {
+    console.log("user find caught", e);
+  }
+  console.log("user find end");
 });
 
 // app.get("/logout", (req, res) => {
