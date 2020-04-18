@@ -50,8 +50,10 @@ db.on("error", (err) => {
   console.log("err", err);
 });
 
-//init app
 const app = express();
+
+var cors = require("cors");
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 //bring in Models
 let Language = require("./models/language.js");
@@ -70,10 +72,37 @@ function parseHrtimeToSeconds(hrtime) {
 
 let current = "";
 
+// app.listen(80, function () {
+//   console.log('CORS-enabled web server listening on port 80')
+// })
+
+// app.options("*", cors()); // include before other routes
 app.use("/public", express.static(path.join(__dirname, "static")));
 
-var cors = require("cors");
-app.use(cors({ credentials: true, origin: "http://158.195.108.7" }));
+// app.use(cors({ credentials: true, origin: "http://158.195.108.7" }));
+
+// app.use(function (req, res, next) {
+//   var allowedOrigins = [
+//     "http://127.0.0.1:3000",
+//     "http://localhost:3000",
+//     "http://158.195.108.7",
+//   ];
+//   var origin = req.headers.origin;
+//   console.log("origin", origin);
+//   if (allowedOrigins.indexOf(origin) > -1) {
+//     res.header("Access-Control-Allow-Origin", origin);
+//   }
+//   //res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:8020');
+//   // res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
+//   // res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.header(
+//     "Access-Control-Allow-Headers",
+//     "Origin, X-Requested-With, Content-Type, Accept"
+//   );
+//   res.header("Access-Control-Allow-Credentials", true);
+//   return next();
+// });
+
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 
 // app.use(cors());
@@ -121,6 +150,11 @@ app.get("/back/two", (req, res) => {
 
 app.post(USER_LOGGED, (req, res) => {
   console.log("req.body.auth", req.body.auth);
+  if (!req.body.auth) {
+    res
+      .status(401) // HTTP status 404: Unauthorized
+      .send("Not logged in ");
+  }
   User.find({ auth: req.body.auth }, (err, answer) => {
     if (err) {
       console.log("login database lookup error");
