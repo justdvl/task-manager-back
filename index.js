@@ -22,6 +22,7 @@ const {
 } = require("./endpoints");
 require("dotenv").config();
 const GOOGLE_TRANSLATE_API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY;
+const SERVER_IP = process.env.SERVER_IP;
 
 // let DICT_SIZE = 999;
 let MOVE_SPEED = 250;
@@ -58,10 +59,12 @@ try {
 //Check for db errors
 
 const app = express();
+console.log("SERVER_IP", SERVER_IP);
 
 var cors = require("cors");
 // app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
-app.use(cors({ credentials: true, origin: "http://64.225.110.242" }));
+// app.use(cors({ credentials: true, origin: "http://64.225.110.242" }));
+app.use(cors({ credentials: true, origin: SERVER_IP }));
 
 //bring in Models
 let Language = require("./models/language.js");
@@ -85,7 +88,8 @@ let current = "";
 // })
 
 // app.options("*", cors()); // include before other routes
-app.use("/public", express.static(path.join(__dirname, "static")));
+app.use("/public", express.static(path.join(__dirname + "/public")));
+// app.use("/public", express.static(path.join(__dirname, "static")));
 
 // app.use(cors({ credentials: true, origin: "http://158.195.108.7" }));
 
