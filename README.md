@@ -1,3 +1,3 @@
 # task-manager-back
 
-need public folder in top dir
+need to mkdir public folder in top-lvl dir

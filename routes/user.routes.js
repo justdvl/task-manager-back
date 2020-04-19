@@ -1,6 +1,5 @@
 let express = require("express"),
   multer = require("multer"),
-  mongoose = require("mongoose"),
   uuidv4 = require("uuid/v4"),
   router = express.Router();
 const DIR = "./public/";
@@ -36,12 +35,6 @@ let Task = require("../models/task");
 
 router.post("/user-profile", upload.single("profileImg"), (req, res, next) => {
   const url = req.protocol + "://" + req.get("host");
-  //   const user = new Task({
-  //     _id: new mongoose.Types.ObjectId(),
-  //     name: req.body.name,
-  //     profileImg:
-  //   });
-  console.log("req.body._id", req.body._id);
   Task.updateOne(
     {
       _id: req.body._id,
@@ -64,29 +57,13 @@ router.post("/user-profile", upload.single("profileImg"), (req, res, next) => {
       }
     }
   );
-  // .save()
-  // .then((result) => {
-  //   res.status(201).json({
-  //     message: "User registered successfully!",
-  //     userCreated: {
-  //       _id: result._id,
-  //       profileImg: result.profileImg,
-  //     },
-  //   });
-  // })
-  // .catch((err) => {
-  //   console.log(err),
-  //     res.status(500).json({
-  //       error: err,
-  //     });
-  // });
 });
 
 router.get("/all", (req, res, next) => {
   console.log("get all");
   Task.find().then((data) => {
     res.status(200).json({
-      message: "User list retrieved successfully!",
+      message: "Task list retrieved successfully!",
       users: data,
     });
   });
