@@ -41,7 +41,7 @@ router.post("/user-profile", upload.single("profileImg"), (req, res, next) => {
       _id: req.body._id,
     },
     {
-      img: url + "/public" + SUBDIRECTORY + "/" + req.file.filename,
+      img: url + SUBDIRECTORY + "/public" + "/" + req.file.filename,
     },
     (err, suc) => {
       if (err) {
