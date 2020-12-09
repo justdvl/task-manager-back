@@ -90,16 +90,16 @@ app.post(USER_LOGGED, (req, res) => {
 });
 
 app.post(LOGIN, (req, res) => {
-  // console.log("login req", req);
+  console.log("login req", req);
   const login = req.body;
-  // console.log("login", login, typeof login);
+  console.log("login", login, typeof login);
   User.find(
-    { username: login.username, password: login.password },
+    { email: login.email, password: login.password },
     (err, answer) => {
       if (err) {
         console.log("login database lookup error");
       } else {
-        console.log("answer:", answer[0], typeof answer);
+        console.log("answer:", answer, typeof answer);
         if (answer[0]) {
           //authorized
           const millis = Date.now();
@@ -107,7 +107,7 @@ app.post(LOGIN, (req, res) => {
           const random = Math.random();
           const userToken = Math.floor(seconds * random);
           User.updateOne(
-            { username: login.username },
+            { email: login.email },
             { auth: userToken },
             (err, res) => {
               if (err) {

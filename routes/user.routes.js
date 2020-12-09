@@ -3,6 +3,7 @@ let express = require("express"),
   uuidv4 = require("uuid/v4"),
   router = express.Router();
 const DIR = "./public/";
+const SUBDIRECTORY = process.env.SUBDIRECTORY ? process.env.SUBDIRECTORY : "";
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -40,7 +41,7 @@ router.post("/user-profile", upload.single("profileImg"), (req, res, next) => {
       _id: req.body._id,
     },
     {
-      img: url + "/public/" + req.file.filename,
+      img: url + "/public" + SUBDIRECTORY + "/" + req.file.filename,
     },
     (err, suc) => {
       if (err) {
